@@ -12,18 +12,20 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
-var svg = d3.select("#scatter") // insert chart to tag id "scatter"
+// insert chart to tag id "scatter"
+var svg = d3
+  .select("#scatter") 
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
-
+//Append an svg group
 var chartGroup = svg.append("g") 
   .attr("height", height)
   .attr("width", width)
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
     
 
-// initial params
+// initial x scale  and y scale params
 var xProperty = "poverty";
 var yProperty = "obesity";
 
@@ -51,10 +53,9 @@ function yScale(data, yProperty) {
   return yLinearScale;
 }
 
-// for updating xAxis var upon click on X axis label
+// function used for updating with a transition/for updating xAxis var upon click on X axis label
 function renderXAxis(newXScale, xAxis) {
   var bottomAxis = d3.axisBottom(newXScale);
-
   xAxis.transition()
     .duration(1000)
     .call(bottomAxis);
@@ -70,7 +71,7 @@ function renderyAxis(newYScale, yAxis) {
 
   return yAxis;
 }
-// function for updating circles group
+// function for updating circles group with a transition
 function renderCircles(circlesGroup, newXScale, xProperty, newYScale, yProperty) {
   circlesGroup.transition()
     .duration(1000)
@@ -145,14 +146,18 @@ function updateToolTip(xProperty,yProperty, circlesGroup) {
     d.healthcare = +d.healthcare;
     d.age = +d.age;
     d.income = +d.income;
-    d.obese = + d.obese;
+    d.obesity = + d.obesity;
     d.smokes = +d.smokes
 });
+    //console.log(data.obesity);
+    //console.log(data.poverty);
+    //console.log(data.smokes)
+    //console.log(data.age)
 
   // xLinearScale function 
   var xLinearScale = xScale(data, xProperty);
 
-
+// Create y scale function
   var yLinearScale = yScale(data, yProperty);
  
   // Create bottom(x) and left(y) axis functions
@@ -177,7 +182,7 @@ function updateToolTip(xProperty,yProperty, circlesGroup) {
     .attr("r", "15") 
     .attr("class", "stateCircle") 
     .attr("opacity", ".7");
-
+    
 
   // Create group for two x-axis labels
   var labelsGroup = chartGroup.append("g")

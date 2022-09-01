@@ -1,16 +1,17 @@
 // @TODO: YOUR CODE HERE!
 var svgWidth = 960;
-var svgHeight = 500;
+var svgHeight = 625;
 var margin = {
   top: 20,
   right: 40,
-  bottom: 80,
+  bottom: 100,
   left: 100
 };
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 // Create an SVG wrapper, append an SVG group that will hold our chart,
 // and shift the latter by left and top margins.
+// insert chart to tag id "scatter"
 var svg = d3
   .select("#scatter")
   .append("svg")
@@ -18,7 +19,9 @@ var svg = d3
   .attr("height", svgHeight);
 // Append an SVG group
 var chartGroup = svg.append("g")
-  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+.attr("height", height)
+.attr("width", width)
+.attr("transform", `translate(${margin.left}, ${margin.top})`);
 // Initial Xscale Params
 var chosenXAxis = "poverty";
 // function used for updating x-scale var upon click on axis label
@@ -166,7 +169,7 @@ function updateToolTipy(chosenYAxis, circlesGroup) {
   return circlesGroup;
 }
 // Retrieve data from the CSV file and execute everything below
-d3.csv("assets/data/data.csv").then(function(censusData, err) {
+d3.csv("data/data.csv").then(function(censusData, err) {
   if (err) throw err;
   // parse data
   censusData.forEach(function(data) {
@@ -177,22 +180,20 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     data.income = +data.income;
     data.smokes = + data.smokes;
     data.obesity = + data.obesity;
-    //console.log(data.abbr);
+    
+  });
+  //console.log(data.abbr);
     //console.log(data.poverty);
     //console.log(data.smokes)
     //console.log(data.age)
-  });
 
-  // xLinearScale function above csv import
+  // xLinearScale function 
   var xLinearScale = xScale(censusData, chosenXAxis);
   
   // Create y scale function
   var yLinearScale = yScale(censusData, chosenYAxis);
-//   var yLinearScale = d3.scaleLinear()
-//     .domain([0, d3.max(censusData, d => d.healthcare)])
-//     .range([height, 0]);
-    
-  // Create initial axis functions
+
+  // Create initial axis functions & Create bottom(x) and left(y) axis functions
   var bottomAxis = d3.axisBottom(xLinearScale);
   var leftAxis = d3.axisLeft(yLinearScale);
   // append x axis
@@ -210,9 +211,9 @@ d3.csv("assets/data/data.csv").then(function(censusData, err) {
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
     .attr("cy", d => yLinearScale(d[chosenYAxis]))
-    .attr("r", 12)
-    .attr("fill", "orange")
-    .attr("opacity", ".5");
+    .attr("r", 15)
+    .attr("fill", "green")
+    .attr("opacity", ".7");
 //adding text element inside the circle
 var circlestext = chartGroup.selectAll(".stateText")
                   .data(censusData)
@@ -232,13 +233,15 @@ var circlestext = chartGroup.selectAll(".stateText")
   var PovertyLabel = xlabelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 20)
-    .attr("value", "poverty") // value to grab for event listener
+    .attr("value", "poverty") 
+    // value to grab for event listener
     .classed("active", true)
     .text("In Poverty (%)");
   var AgeLabel = xlabelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 40)
-    .attr("value", "age") // value to grab for event listener
+    .attr("value", "age") 
+    // value to grab for event listener
     .classed("inactive", true)
     .text("Age (Median)");
   var IncomeLabel = xlabelsGroup.append("text")
